@@ -1,0 +1,27 @@
+<VirtualHost *:80>
+    SuexecUserGroup puppet puppet
+    ServerName puppet.domain.tld
+    DocumentRoot /var/www/pgsvr/public
+    ServerAdmin email@domain.tld
+ 
+    <Directory "/var/www/pgsvr/public">
+       AllowOverride None
+       Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+       Order allow,deny
+       Allow from all
+       AddHandler cgi-script .cgi
+    </Directory>
+ 
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ /dispatch.cgi/$1 [QSA,L]
+ 
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+
+    # Possible values include: debug, info, notice, warn, error, crit,
+    # alert, emerg.
+    LogLevel warn
+
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
