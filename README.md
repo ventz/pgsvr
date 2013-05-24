@@ -5,15 +5,23 @@ Version: 0.0.1
 Ventz Petkov
 ventz@vpetkov.net
 
-This is a BETA - it seems to work currently. It is FAR from complete.
+This is a BETA - it works well currently, but it is FAR from complete.
+
+NOTE: This requires r10k setup
+(https://github.com/puppetlabs-operations/puppet-r10k)
+
+Short Summary: This lets you configure a post-receive hook with your
+git server/github that signals over REST so that an r10k run can
+happen.
+
 
 What is this?
 -------------
 If you are using puppet with git (github or your own server/repo), you
 have realized really quickly that there are two 'hacky' ways to do it:
-1.) keep the git server/repo on the puppet server
+* keep the git server/repo on the puppet server
 or
-2.) glue some magic in via SSH from the git server to the puppet server
+* glue some magic in via SSH from the git server to the puppet server
 
 Partial Solutions: use r10k. You push your code to your git server, and the
 r10k module on on your puppet master grabs it every X minutes (20 by
@@ -32,62 +40,64 @@ PGSVR Components and Quick Summary:
 -----------------------------------
 This is rather simple.
 
-1.) You need 2 perl modules (Dancer and Plack)
-2.) An Apache server with a virtual config (I provide the site config)
-3.) A cgi-root (I create it under /var/www/pgsvr with the apache config)
+* You need r10k - "dynamic puppet environments" tied into Git 
+* You need 2 perl modules (Dancer and Plack)
+* An Apache server with a virtual config (I provide the site config)
+* A cgi-root (I create it under /var/www/pgsvr with the apache config)
 to drop the app itself.
-4.) Other than that, you need to unfortunately
+* Other than that, you need to unfortunately
 change all of the r10k files to be owned by the 'puppet' user.
+
 
 To get it working, you need to:
 -------------------------------
-
-1.) Have a "dynamic git puppet environment"
+1. Have a "dynamic git puppet environment"
 You commit to git, and it picks up the branch and then creates the
 appropriate puppet environment
 
 Something like this in /etc/puppet/puppet.conf on the master:
 
-environment = master
+    environment = master
+    manifest    = $confdir/environments/$environment/manifests/site.pp
+    modulepath  = $confdir/modules:$confdir/environments/$environment/modules:$confdir/environments/$environment/dist:$confdir/environments/$environment/site
 
-manifest    = $confdir/environments/$environment/manifests/site.pp
-
-modulepath  = $confdir/modules:$confdir/environments/$environment/modules:$confdir/environments/$environment/dist:$confdir/environments/$environment/site
-
-
-2.) install r10k
+2. install r10k
 (https://github.com/puppetlabs-operations/puppet-r10k)
 
-
-3.) Locate every r10k file and chown to 'puppet':
+3. Locate every r10k file and chown to 'puppet':
 locate r10k | grep -v 'etc' | xargs -L1 chown puppet
 
+4. Then chown of just /etc/r10k.yaml to 'puppet'
 
-4.) Then chown of just /etc/r10k.yaml to 'puppet'
+5. /etc/puppet/environments need to be owned by 'puppet' and group by apache (www-data on ubuntu)
 
-
-5.) /etc/puppet/environments need to be owned by 'puppet' and group by apache (www-data on ubuntu)
-
-6.) Take the 'pgsvr' repo and grab the 'pgsvr' apache config, and
+6. Take the 'pgsvr' repo and grab the 'pgsvr' apache config, and
 enable it as a virtual host. You will need 2 Perl modules:
-
 Dancer (ubuntu: libdancer-perl) -> REST framework in Perl
-
 Plack (ubuntu: libplack-perl) -> Interface for Perl webapp to interface with Apache/other web servers
 
-7.) Take 'pgsvr' folder (inside the 'app' folder) and drop it in /var/www
+7. Take 'pgsvr' folder (inside the 'app' folder) and drop it in /var/www
 
-8.) Go into the /var/www/pgsvr/bin/app.pl and create yourself an 'user
-+ token' (see line about MD5 part). In reality, ANYTHING can be used
-as a token.
+8. Go into the /var/www/pgsvr/bin/app.pl and create yourself an 'user
+and token' (see line about MD5 part). In reality, ANYTHING can be used
+as a token. It's just used for a super rudimentary way of
+"authenticating".
 
 
 How to Test it:
 ---------------
 
-1.) Make sure /etc/puppet/environments is empty
+1. Make sure /etc/puppet/environments is empty
 
-2.) You can 'curl' call your rest service: curl -i -H "Accept:
+2. You can 'curl' call your rest service: curl -i -H "Accept:
 application/xml" http://puppet.domain.tld/sync/$user/$token
 
 Where $user is the 'user' you created
+
+
+TODO:
+-----
+
+* Create a rest call to read a file of users/tokens
+* Create real authentication
+
