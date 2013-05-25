@@ -14,6 +14,8 @@ my $port = 8080;
 set serializer => $serializer;
 set port => $port;
 set startup_info => 0;
+set log => 'error';
+set logger => 'file';
  
 # One way to create a token: "md5sum" and concat some initial + username
 # ex: for user 'ventz', you can do: echo 'tk123ventz' | md5sum

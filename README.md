@@ -7,7 +7,7 @@ ventz@vpetkov.net
 
 This is a BETA - it works well currently, but it is FAR from complete.
 
-NOTE: This requires r10k setup
+NOTE: This requires a r10k setup with Puppet
 (https://github.com/puppetlabs-operations/puppet-r10k)
 
 Short Summary: This lets you configure a post-receive hook with your
@@ -43,6 +43,7 @@ This is rather simple.
 * You need r10k - "dynamic puppet environments" tied into Git 
 * You need 2 perl modules (Dancer and Plack)
 * An Apache server with a virtual config (I provide the site config)
+* SUExec Apache Module
 * A cgi-root (I create it under /var/www/pgsvr with the apache config)
 to drop the app itself.
 * Other than that, you need to unfortunately
@@ -72,11 +73,12 @@ locate r10k | grep -v 'etc' | xargs -L1 chown puppet
 5. /etc/puppet/environments need to be owned by 'puppet' and group by apache (www-data on ubuntu)
 
 6. Take the 'pgsvr' repo and grab the 'pgsvr' apache config, and
-enable it as a virtual host. You will need 2 Perl modules:
-Dancer (ubuntu: libdancer-perl) -> REST framework in Perl
-Plack (ubuntu: libplack-perl) -> Interface for Perl webapp to interface with Apache/other web servers
+enable it as a virtual host. You will need Apache's mod 'suexec' (ubuntu: apache2-suexec)
 
 7. Take 'pgsvr' folder (inside the 'app' folder) and drop it in /var/www
+You will need 2 Perl modules:
+Dancer (ubuntu: libdancer-perl) -> REST framework in Perl
+Plack (ubuntu: libplack-perl) -> Interface for Perl webapp to interface with Apache/other web servers
 
 8. Go into the /var/www/pgsvr/bin/app.pl and create yourself an 'user
 and token' (see line about MD5 part). In reality, ANYTHING can be used
