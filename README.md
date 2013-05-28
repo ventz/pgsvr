@@ -7,12 +7,16 @@ ventz@vpetkov.net
 
 This is a BETA - it works well currently, but it is FAR from complete.
 
-NOTE: This requires an r10k setup with Puppet - without a CRON
+NOTE: This requires an r10k setup with Puppet - without a CRON setup
 (https://github.com/puppetlabs-operations/puppet-r10k)
 
 Short Summary: This lets you configure a post-receive hook with your
 git server/github that signals over REST so that an r10k run can
 happen.
+
+Alternatively, by changing one line - you can modify this to run
+anything on your puppet server as the 'puppet' user when a signal hook
+is received.
 
 
 What is this?
@@ -22,7 +26,7 @@ have realized really quickly that there are two 'hacky' ways to do it:
 keep the git server/repo on the puppet server or glue some magic in
 via SSH from the git server to the puppet server
 
-####Partial Solutions:
+####Partial Solution:
 use r10k. You push your code to your git server, and the
 r10k module on on your puppet master grabs it every X minutes (20 by
 default, but you can configure it down to 1).
@@ -30,10 +34,11 @@ default, but you can configure it down to 1).
 Still, that's NOT good enough! Can you imagine having to tell people
 to wait a whole minute!
 
-####SOLUTION: PGSVR - you set it up on your puppet server, and you
-configure github (or any git server) to have a post-receive hook that
-simply signals your puppet server. This will initialize a r10k run.
-Simple huh? Yep - simple but effective.
+####Solution: PGSVR
+you set it up on your puppet server, and you configure github (or any
+git server) to have a post-receive hook that simply signals your
+puppet server. This will initialize a r10k run.  Simple huh? Yep -
+simple but effective.
 
 
 PGSVR Components and Quick Summary:
