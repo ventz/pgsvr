@@ -3,12 +3,14 @@
 # Ventz Petkov
 # ventz_petkov@harvard.edu
 
-# Version: 0.0.1 - BETA
+# Version: 0.0.2 - BETA
 
 use Dancer;
 
 my $serializer = 'XML'; # or 'JSON'
-my $port = 8080;
+my $port = 8080; # used for stand-alone app (not via Apache)
+my $http_proxy = 'http://proxy.domain.tld:8080';
+my $https_proxy = 'http://proxy.domain.tld:8080';
 
 
 set serializer => $serializer;
@@ -32,7 +34,7 @@ get '/sync/:user/:token' => sub {
     my $token = params->{token};
 
     if($token eq $users{$user}) {
-        `/usr/local/bin/r10k synchronize`;
+        `export http_proxy="$http_proxy" && export https_proxy="$https_proxy" && /usr/local/bin/r10k synchronize`;
 	    return{message => "Synching r10k..."};
     }
     else {

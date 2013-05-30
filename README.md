@@ -1,6 +1,6 @@
 pgsvr - Puppet Git Sync via REST
 ================================
-Version: 0.0.1
+Version: 0.0.2
 
 Ventz Petkov
 ventz@vpetkov.net
@@ -53,6 +53,7 @@ This is rather simple.
 to drop the app itself.
 * Other than that, you need to unfortunately
 change all of the r10k files to be owned by the 'puppet' user.
+* Create some "tokens" and configure the proxy variables
 
 
 To get it working, you need to:
@@ -98,6 +99,9 @@ and token' (see line about MD5 part). In reality, ANYTHING can be used
 as a token. It's just used for a super rudimentary way of
 "authenticating".
 
+* Please set the $http_proxy and $https_proxy variables to '' if you
+* don't need to use a proxy. This is used for pulling down modules from git and puppet forge
+
 
 How to Test it:
 ---------------
@@ -113,5 +117,6 @@ TODO:
 -----
 
 * Create a rest call to read a file of users/tokens
+* Create a config file for the http(s)-proxy variables
 * Create real authentication
 
