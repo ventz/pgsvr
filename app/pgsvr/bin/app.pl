@@ -25,11 +25,11 @@ my %users = (
     ventz => "21305f46bfddd24bf1c1074ad4ce3837",
 );
 
-get '/' => sub {
+any ['get', 'post'] => '/' => sub {
     return {message => "PGSVR - Puppet Git Sync via REST"};
 };
 
-get '/sync/:user/:token' => sub {
+any ['get', 'post'] => '/sync/:user/:token' => sub {
     my $user = params->{user};
     my $token = params->{token};
 

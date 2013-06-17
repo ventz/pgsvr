@@ -1,6 +1,6 @@
 pgsvr - Puppet Git Sync via REST
 ================================
-Version: 0.0.2
+Version: 0.0.3
 
 Ventz Petkov
 ventz@vpetkov.net

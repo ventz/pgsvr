@@ -4,9 +4,9 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile(
     NAME                => 'pgsvr',
-    AUTHOR              => q{YOUR NAME <youremail@example.com>},
+    AUTHOR              => q{Ventz Petkov <ventz@vpetkov.net>},
     VERSION_FROM        => 'lib/pgsvr.pm',
-    ABSTRACT            => 'YOUR APPLICATION ABSTRACT',
+    ABSTRACT            => 'PGSVR - Puppet GIT Sync via REST',
     ($ExtUtils::MakeMaker::VERSION >= 6.3002
       ? ('LICENSE'=> 'perl')
       : ()),
