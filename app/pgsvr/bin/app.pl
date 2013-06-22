@@ -1,9 +1,7 @@
 #!/usr/bin/perl
 # Puppet Git Sync via REST
 # Ventz Petkov
-# ventz_petkov@harvard.edu
-
-# Version: 0.0.2 - BETA
+# ventz@vpetkov.net
 
 use Dancer;
 
@@ -34,7 +32,7 @@ any ['get', 'post'] => '/sync/:user/:token' => sub {
     my $token = params->{token};
 
     if($token eq $users{$user}) {
-        `export http_proxy="$http_proxy" && export https_proxy="$https_proxy" && /usr/local/bin/r10k synchronize`;
+        `export http_proxy="$http_proxy" && export https_proxy="$https_proxy"; sudo /usr/local/bin/r10k synchronize`;
 	    return{message => "Synching r10k..."};
     }
     else {

@@ -1,5 +1,4 @@
 <VirtualHost *:80>
-    SuexecUserGroup puppet puppet
     ServerName puppet.domain.tld
     DocumentRoot /var/www/pgsvr/public
     ServerAdmin email@domain.tld
