@@ -20,7 +20,7 @@ set logger => 'file';
 # One way to create a token: "md5sum" and concat some initial + username
 # ex: for user 'ventz', you can do: echo 'tk123ventz' | md5sum
 my %users = (
-    ventz => "21305f46bfddd24bf1c1074ad4ce3837",
+    user => "21305f46bfddd24bf1c1074ad4ce3837",
 );
 
 any ['get', 'post'] => '/' => sub {
@@ -32,8 +32,21 @@ any ['get', 'post'] => '/sync/:user/:token' => sub {
     my $token = params->{token};
 
     if($token eq $users{$user}) {
-        `export http_proxy="$http_proxy" && export https_proxy="$https_proxy"; sudo /usr/local/bin/r10k synchronize`;
-	    return{message => "Synching r10k..."};
+        my $os = `lsb_release -is`; chomp($os);
+        my $os_version = `lsb_release -rs`; chomp($os_version);
+
+        if($os =~ /Ubuntu/) {
+            `export http_proxy="$http_proxy" && export https_proxy="$https_proxy"; sudo /usr/local/bin/r10k synchronize`;
+        }
+        elsif($os =~ /(RedHat|CentOS)/) {
+            if($os_version =~ /^6/) {
+                `export http_proxy="$http_proxy" && export https_proxy="$https_proxy"; sudo /usr/local/bin/r10k deploy environment -p`;
+            }
+            elsif($os_version =~ /^5/) {
+                `export http_proxy="$http_proxy" && export https_proxy="$https_proxy"; sudo /usr/local/bin/r10k synchronize`;
+            }
+        }
+	    return{message => "Synching r10k on $os running $os_version..."};
     }
     else {
         return{message => "ERROR: Invalid user"};
