@@ -29,6 +29,10 @@ This is rather simple. Don't let the length of this readme scare you!
 
 * You need r10k - "dynamic puppet environments" tied into Git. Make sure that you disable CRON. We will run it only when there is a need. If you are not sure about this, look bellow for more details.
 
+* Set a shell for your puppet user:
+
+    chsh -s /bin/bash puppet
+
 * Edit your sudo-ers file (visudo)
 
 For Ubuntu:
@@ -68,6 +72,11 @@ Make sure you install it with:
     # Comment out since it HAS to run by the 'puppet' user
     # or -- modify the code to deploy cron for puppet user.
     #include r10k::cron
+
+* Set a shell for your puppet user:
+
+    chsh -s /bin/bash puppet
+
 
 * Edit your sudo-ers file (visudo)
 
