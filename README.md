@@ -1,6 +1,6 @@
 pgsvr - Puppet Git Sync via REST
 ================================
-Version: 0.0.5
+Version: 0.0.6
 
 Ventz Petkov
 ventz@vpetkov.net
@@ -37,15 +37,17 @@ This is rather simple. Don't let the length of this readme scare you!
 
 For Ubuntu:
 
+    Defaults env_keep = "http_proxy https_proxy"
     www-data    ALL= NOPASSWD: * /usr/local/bin/r10k
 
 For RHEL/Centos:
 
+    Defaults env_keep = "http_proxy https_proxy"
     apache2    ALL= NOPASSWD: * /usr/local/bin/r10k
 
 * You need 2 perl modules (Dancer and Plack)
-* An Apache server with a virtual config (I provide the site config)
-* A cgi-root (I create it under /var/www/pgsvr with the apache config) to drop the app itself.
+* An Apache server with a virtual config (I provide the site config - look through it)
+* A cgi-root (I create it under /var/www/pgsvr with the apache config) to drop the app itself. Make sure it's owned by your web user.
 * Create some "tokens" and configure the proxy variables. A token is a
 unique string basically.
 
@@ -82,10 +84,12 @@ Make sure you install it with:
 
 For Ubuntu:
 
+    Defaults env_keep = "http_proxy https_proxy"
     www-data    ALL= NOPASSWD: * /usr/local/bin/r10k
 
 For RHEL/Centos:
 
+    Defaults env_keep = "http_proxy https_proxy"
     apache2    ALL= NOPASSWD: * /usr/local/bin/r10k
 
 * /etc/puppet/environments need to be owned by 'puppet' and group by apache (www-data on ubuntu)
@@ -93,7 +97,7 @@ For RHEL/Centos:
 * Take the 'pgsvr' repo and grab the 'pgsvr' apache config, and
 enable it as a virtual host.
 
-* Take 'pgsvr' folder (inside the 'app' folder) and drop it in /var/www
+* Take 'pgsvr' folder (inside the 'app' folder) and drop it in /var/www, and make sure everything is owned by your web user.
 
 * You will need to install 2 Perl modules:
     * Dancer (ubuntu: libdancer-perl) -> REST framework in Perl
@@ -104,7 +108,7 @@ and token' (see line about MD5 part). In reality, ANYTHING can be used
 as a token. It's just used for a super rudimentary way of
 "authenticating".
 
-* Please set the $http_proxy and $https_proxy variables to '' if you don't need to use a proxy. This is used for pulling down modules from git and puppet forge
+* If you use a proxy, please enter it in the apache virtual config file. The variables are passed through sudo to the app.
 
 
 How to Test it:

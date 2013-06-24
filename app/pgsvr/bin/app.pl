@@ -7,8 +7,6 @@ use Dancer;
 
 my $serializer = 'XML'; # or 'JSON'
 my $port = 8080; # used for stand-alone app (not via Apache)
-my $http_proxy = 'http://proxy.domain.tld:8080';
-my $https_proxy = 'http://proxy.domain.tld:8080';
 
 
 set serializer => $serializer;
@@ -36,14 +34,14 @@ any ['get', 'post'] => '/sync/:user/:token' => sub {
         my $os_version = `lsb_release -rs`; chomp($os_version);
 
         if($os =~ /Ubuntu/) {
-            `export http_proxy="$http_proxy" && export https_proxy="$https_proxy"; sudo /usr/local/bin/r10k synchronize`;
+            `sudo /usr/local/bin/r10k synchronize`;
         }
         elsif($os =~ /(RedHat|CentOS)/) {
             if($os_version =~ /^6/) {
-                `export http_proxy="$http_proxy" && export https_proxy="$https_proxy"; sudo /usr/local/bin/r10k deploy environment -p`;
+                `sudo /usr/local/bin/r10k deploy environment -p`;
             }
             elsif($os_version =~ /^5/) {
-                `export http_proxy="$http_proxy" && export https_proxy="$https_proxy"; sudo /usr/local/bin/r10k synchronize`;
+                `sudo /usr/local/bin/r10k synchronize`;
             }
         }
 	    return{message => "Synching r10k on $os running $os_version..."};

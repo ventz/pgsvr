@@ -3,6 +3,10 @@
     DocumentRoot /var/www/pgsvr/public
     ServerAdmin email@domain.tld
  
+    # Set Proxy - if one is available
+    SetEnv http_proxy ''
+    SetEnv https_proxy ''
+
     <Directory "/var/www/pgsvr/public">
        AllowOverride None
        Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
