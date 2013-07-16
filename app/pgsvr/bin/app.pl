@@ -34,13 +34,14 @@ any ['get', 'post'] => '/sync/:user/:token' => sub {
         my $os_version = `lsb_release -rs`; chomp($os_version);
 
         if($os =~ /Ubuntu/) {
-            `sudo /usr/local/bin/r10k synchronize`;
+            `sudo /usr/local/bin/r10k deploy environment -p`;
         }
         elsif($os =~ /(RedHat|CentOS)/) {
             if($os_version =~ /^6/) {
                 `sudo /usr/local/bin/r10k deploy environment -p`;
             }
             elsif($os_version =~ /^5/) {
+                # Note: if you are using a gem, change to deploy env line.
                 `sudo /usr/local/bin/r10k synchronize`;
             }
         }
