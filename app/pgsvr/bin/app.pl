@@ -30,6 +30,8 @@ any ['get', 'post'] => '/sync/:user/:token' => sub {
     my $token = params->{token};
 
     if($token eq $users{$user}) {
+        # Note: OS Detection for future changes, and to deal with
+        # legacy 'puppet-r10k' vs the new 'r10k' which has this feature.
         my $os = `lsb_release -is`; chomp($os);
         my $os_version = `lsb_release -rs`; chomp($os_version);
 
@@ -41,8 +43,7 @@ any ['get', 'post'] => '/sync/:user/:token' => sub {
                 `sudo /usr/local/bin/r10k deploy environment -p`;
             }
             elsif($os_version =~ /^5/) {
-                # Note: if you are using a gem, change to deploy env line.
-                `sudo /usr/local/bin/r10k synchronize`;
+                `sudo /usr/local/bin/r10k deploy environment -p`;
             }
         }
 	    return{message => "Synching r10k on $os running $os_version..."};

@@ -1,6 +1,6 @@
 pgsvr - Puppet Git Sync via REST
 ================================
-Version: 0.0.6
+Version: 0.0.8
 
 Ventz Petkov
 ventz@vpetkov.net
@@ -9,7 +9,7 @@ ventz@vpetkov.net
 PLEASE NOTE
 -----------
 * This is still a BETA - it works well, but it is FAR from complete.
-* To use this "as is", it requires an r10k setup with Puppet (https://github.com/puppetlabs-operations/puppet-r10k)
+* To use this "as is", it requires an r10k for git based environments: (https://github.com/acidprime/r10k)
 * You can change one line and make it to work with just git or any other framework or custom written deploy/sync script.
 
 
@@ -37,7 +37,26 @@ Quick Setup and PGSVR Components
 --------------------------------
 This is rather simple. Don't let the length of this readme scare you!
 
-* You need r10k - "dynamic puppet environments" tied into Git. Make sure that you disable CRON. We will run it only when there is a need. If you are not sure about this, look bellow for more details.
+* You need r10k - "dynamic puppet environments" tied into Git.
+
+This can be obtained with one command:
+
+    puppet module install zack/r10k
+
+* You need to deploy for your dynamic environments.
+
+Create a "deploy_r10k" module with an init.pp which contains:
+
+    class { 'r10k':
+        remote => 'git@github.com:someuser/puppet.git',
+    }
+
+And apply your module:
+
+    puppet apply deploy_r10k/manifests/init.pp
+
+Please make sure that you DO NOT add the "include r10k::prerun_command" bit.
+The whole point of PGSVR is to do this intelligently and only as needed.
 
 * Set a shell for your puppet user.
 
@@ -63,9 +82,11 @@ For RHEL/Centos:
 * Create some "tokens" and configure the proxy variables. A token is a
 unique string basically.
 
+* That's it! Now skip down to the "How to Test it" section.
 
-To get it working, you need to:
--------------------------------
+
+To get it working (detailed version), you need to:
+--------------------------------------------------
 * Have a "dynamic git puppet environment"
 You commit to git, and it picks up the branch and then creates the
 appropriate puppet environment
@@ -76,18 +97,28 @@ Something like this in /etc/puppet/puppet.conf on the master:
     manifest    = $confdir/environments/$environment/manifests/site.pp
     modulepath  = $confdir/modules:$confdir/environments/$environment/modules:$confdir/environments/$environment/dist:$confdir/environments/$environment/site
 
-* Install r10k (https://github.com/puppetlabs-operations/puppet-r10k)
+This can be obtained with one command:
 
-Make sure you install it with:
+    puppet module install zack/r10k
+
+* You need to deploy for your dynamic environments.
+
+Create a "deploy_r10k" module with an init.pp which contains:
 
     class { 'r10k':
-        configfile => 'puppet:///modules/some-module/r10k.yaml',
+        remote => 'git@github.com:someuser/puppet.git',
     }
-    # Comment out since it HAS to run by the 'puppet' user
-    # or -- modify the code to deploy cron for puppet user.
-    #include r10k::cron
 
-* Set a shell for your puppet user:
+And apply your module:
+
+    puppet apply deploy_r10k/manifests/init.pp
+
+Please make sure that you DO NOT add the "include r10k::prerun_command" bit.
+The whole point of PGSVR is to do this intelligently and only as needed.
+
+* Set a shell for your puppet user.
+
+Use bash for example:
 
     chsh -s /bin/bash puppet
 
